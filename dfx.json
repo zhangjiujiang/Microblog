@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "dfx": "0.8.4",
+  "canisters": {
+    "Microblog": {
+      "type": "motoko",
+      "main": "src/Microblog/main.mo"
+    },
+    "Microblog_assets": {
+      "type": "assets",
+      "source": [
+        "src/Microblog_assets/assets"
+      ],
+      "dependencies": [
+        "Microblog"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  }
+}
