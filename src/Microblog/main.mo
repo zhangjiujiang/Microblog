@@ -1,5 +1,6 @@
 import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
 import List "mo:base/List";
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
@@ -13,7 +14,7 @@ actor {
         follow  : shared(Principal) -> async ();
         follows : shared query () -> async [Principal];
         post    : shared(Text) -> async ();
-        posts   : shared query () -> async [Message];
+        posts   : shared query (since : Time.Time) -> async [Message];
         timeline: shared () -> async [Message];
     };
     
@@ -39,16 +40,16 @@ actor {
     };
     
     //返回所有发布的消息
-    public shared query func posts() : async [Message] {
-        List.toArray(messages);
+    public shared query func posts(since : Time.Time) : async [Message] {
+        Array.filter<Message>(List.toArray(messages),func(i){i.time >= since});
     };
 
     //返回所有关注对象发布的消息
-    public shared func timeline() : async [Message] {
+    public shared func timeline(since : Time.Time) : async [Message] {
         var all : List.List<Message> = List.nil();
         for (id in Iter.fromList(followed)){
             let canister : Microblog = actor(Principal.toText(id));
-            let msgs = await canister.posts();
+            let msgs = await canister.posts(since);
             for (msg in msgs.vals()){
                 all := List.push(msg,all);
             }
